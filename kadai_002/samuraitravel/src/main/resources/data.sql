@@ -99,4 +99,4 @@ INSERT IGNORE INTO review (id, user_id, review_star, review_text, created_at, up
 INSERT IGNORE INTO review (id, user_id, review_star, review_text, created_at, updated_at, delete_flag) VALUES (1, 10, 1, 'もう行かない', '2024-04-01', '2024-09-02', 0);
 INSERT IGNORE INTO review (id, user_id, review_star, review_text, created_at, updated_at, delete_flag) VALUES (1, 11, 3, 'そこそこ', '2024-04-01', '2024-01-02', 0);
 INSERT IGNORE INTO review (id, user_id, review_star, review_text, created_at, updated_at, delete_flag) VALUES (1, 12, 5, '子供連れてまた来ます', '2024-04-01', '2024-03-02', 0);
-INSERT IGNORE INTO review (id, user_id, review_star, review_text, created_at, updated_at, delete_flag) VALUES (1, 1, 3, 'また泊まりたい', '2024-04-01', '2024-04-14', 0);
+INSERT IGNORE INTO review (id, user_id, review_star, review_text, created_at, updated_at, delete_flag) VALUES (2, 1, 3, 'また泊まりたい', '2024-04-01', '2024-04-14', 0);

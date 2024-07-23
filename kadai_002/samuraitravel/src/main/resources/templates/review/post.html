@@ -29,7 +29,7 @@
 
 						<h1 class="mb-4 text-center" th:text="${house.getName()+'のレビュー投稿'}"></h1>
 
-						<form method="post" th:action="@{/houses/reviewCreate}" th:object="${reviewRegisterForm}"
+						<form method="post" th:action="@{/houses/__${house.getId()}__/createReview}" th:object="${reviewRegisterForm}"
 							enctype="multipart/form-data">
 							<div class="form-group row mb-3">
 								<div class="col-md-4">

@@ -31,12 +31,12 @@ public class ReviewEntity {
 	@Column(name = "review_text")
 	private String reviewText;
 	
-	@Column(name = "created_at")
+	@Column(name = "created_at", insertable = false, updatable = false)
 	private LocalDate createdAt;
 	
-	@Column(name = "updated_at")
+	@Column(name = "updated_at", insertable = false, updatable = false)
 	private LocalDate updatedAt;
 	
-	@Column(name = "delete_flag")
+	@Column(name = "delete_flag", insertable = false)
 	private boolean deleteFlag;
 }
