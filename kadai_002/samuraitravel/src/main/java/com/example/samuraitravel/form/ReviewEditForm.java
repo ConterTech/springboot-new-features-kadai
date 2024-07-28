@@ -2,10 +2,12 @@ package com.example.samuraitravel.form;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-public class ReviewRegisterForm {
+@AllArgsConstructor
+public class ReviewEditForm {
 	@NotNull(message = "レビュー数を選択してください")
 	private int reviewStar;
 

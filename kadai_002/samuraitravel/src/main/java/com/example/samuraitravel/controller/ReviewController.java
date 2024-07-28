@@ -1,5 +1,7 @@
 package com.example.samuraitravel.controller;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.samuraitravel.entity.House;
 import com.example.samuraitravel.entity.ReviewEntity;
 import com.example.samuraitravel.entity.User;
+import com.example.samuraitravel.form.ReviewEditForm;
 import com.example.samuraitravel.form.ReviewRegisterForm;
 import com.example.samuraitravel.repository.HouseRepository;
 import com.example.samuraitravel.repository.ReviewRepository;
@@ -70,13 +73,31 @@ public class ReviewController {
 			BindingResult bindingResult,Model model) {
 
 		User user = userDetailsImpl.getUser();
+		Integer userId = user.getId();
+		System.out.println(id);
+		System.out.println(user);
 			
 		if (bindingResult.hasErrors()) {
 			return "review/post";
 		}
 
-		reviewService.createReview(reviewRegisterForm, user, id);
+		reviewService.createReview(reviewRegisterForm, userId, id);
 
 		return "redirect:/houses";
+	}
+	
+	@GetMapping("/{id}/editReview")
+	public String editReview(@PathVariable(name = "id") Integer id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl, Model model) {
+		House house = houseRepository.getReferenceById(id);
+		
+		User user = userDetailsImpl.getUser();
+		Integer userId = user.getId();
+		Optional<ReviewEntity> optionalReview = reviewRepository.findByUserAndId(user, id);
+		
+		ReviewEntity review = optionalReview.get();
+        ReviewEditForm reviewEditForm = new ReviewEditForm(review.getReviewStar(), review.getReviewText());
+        model.addAttribute("house", house);
+        model.addAttribute("reviewEditForm", reviewEditForm);
+        return "review/edit";
 	}
 }

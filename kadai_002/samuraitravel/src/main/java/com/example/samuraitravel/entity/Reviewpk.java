@@ -17,5 +17,5 @@ public class Reviewpk {
 	@Id
 	@JoinColumn(name = "user_id")
 	@OneToOne
-	private User userId;
+	private User user;
 }

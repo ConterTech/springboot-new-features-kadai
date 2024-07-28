@@ -26,3 +26,16 @@
 	color:rgb(210, 210, 210);
 	margin-bottom: 1rem;
 }
+
+.reviewTitle {
+	display:flex;
+	justify-content:space-between;
+}
+
+.review-edit {
+	color:blue;
+}
+
+.review-delete {
+	color:red;
+}

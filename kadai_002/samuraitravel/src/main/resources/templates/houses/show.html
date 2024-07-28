@@ -168,16 +168,25 @@
 
 								<div>
 									<h3 class="mb-4 text-center">レビュー</h3>
-<!--									ログイン済みの時　-->
+									<!--									ログイン済みの時　-->
 									<div sec:authorize="isAuthenticated()">
-<!--										レビュー未投稿の時-->
+										<!--										レビュー未投稿の時-->
 										<div class="text-center mb-3">
-											<a th:href="@{/houses/__${house.getId()}__/reviewRegister}" class="btn text-white shadow-sm samuraitravel-btn">レビューを投稿する</a>
+											<a th:href="@{/houses/__${house.getId()}__/reviewRegister}"
+												class="btn text-white shadow-sm samuraitravel-btn">レビューを投稿する</a>
 										</div>
-<!--										レビュー投稿済みの時-->
+										<!--										レビュー投稿済みの時-->
 										<div id="review-wrapper">
+
 											<div class="review" th:each="review : ${reviews}">
-												<div class="reviewer" th:text="${review.getUserId().getName()}"></div>
+												<div class="reviewTitle">
+													<div class="reviewer" th:text="${review.getUser().getName()}"></div>
+													<div th:if="${review.getUser().getId() == userId}">
+														<a class="review-edit" th:href="@{/houses/__${house.getId()}__/editReview}">編集</a>
+														<a class="review-delete" th:href="@{/houses/__${house.getId()}__/editReview}">削除</a>
+													</div>
+												</div>
+
 												<th:block th:switch="${review.reviewStar}">
 													<div class="star-color" th:case=1>
 														&#9733;&#9734;&#9734;&#9734;&#9734;
@@ -202,11 +211,11 @@
 											</div>
 										</div>
 									</div>
-<!--									未ログインの時　-->
+									<!--									未ログインの時　-->
 									<div sec:authorize="isAnonymous()">
 										<div id="review-wrapper">
 											<div class="review" th:each="review : ${reviews}">
-												<div class="reviewer" th:text="${review.getUserId().getName()}"></div>
+												<div class="reviewer" th:text="${review.getUser().getName()}"></div>
 												<th:block th:switch="${review.reviewStar}">
 													<div class="star-color" th:case=1>
 														&#9733;&#9734;&#9734;&#9734;&#9734;
@@ -231,11 +240,11 @@
 											</div>
 										</div>
 									</div>
-<!--									レビューがある時-->
+									<!--									レビューがある時-->
 									<div th:if="${reviews.getTotalElements() >= 1}" class="text-center mt-3 mb-3">
 										<a th:href="@{/houses/__${house.getId()}__/review}">すべてのレビューを見る</a>
 									</div>
-<!--									レビューがない時-->
+									<!--									レビューがない時-->
 									<div th:if="${reviews.getTotalElements() == 0}" class="text-center mt-3 mb-3">
 										<span>まだレビューがありません。</span>
 									</div>

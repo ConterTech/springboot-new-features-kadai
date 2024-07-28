@@ -23,7 +23,7 @@ public class ReviewEntity {
 	@Id
 	@JoinColumn(name = "user_id")
 	@OneToOne
-	private User userId;
+	private User user;
 	
 	@Column(name = "review_star")
 	private int reviewStar;
