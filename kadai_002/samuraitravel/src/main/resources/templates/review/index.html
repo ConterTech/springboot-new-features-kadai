@@ -38,7 +38,16 @@
 							<h3 class="mb-4 text-center">レビュー</h3>
 							<div id="review-wrapper">
 								<div class="review" th:each="review : ${reviews}">
-									<div class="reviewer" th:text="${review.getUserId().getName()}"></div>
+									<div class="reviewTitle">
+										<div class="reviewer" th:text="${review.getUser().getName()}"></div>
+										<div th:if="${review.getUser().getId() == userId}">
+											<a class="review-edit"
+												th:href="@{/houses/__${house.getId()}__/editReview}">編集</a>
+											<a class="review-delete"
+												th:href="@{/houses/__${house.getId()}__/editReview}">削除</a>
+										</div>
+									</div>
+
 									<th:block th:switch="${review.reviewStar}">
 										<div class="star-color" th:case=1>&#9733;&#9734;&#9734;&#9734;&#9734;</div>
 										<div class="star-color" th:case=2>&#9733;&#9733;&#9734;&#9734;&#9734;</div>

@@ -81,9 +81,13 @@ public class HouseController {
         House house = houseRepository.getReferenceById(id);
         Page<ReviewEntity> reviews = reviewRepository.findByIdOrderByCreatedAtDesc(id, pageable);
         
+        boolean hasUserReviewed = reviews.stream().anyMatch(review -> review.getUser().getId().equals(userDetailsImpl.getUser().getId()));
+        
         model.addAttribute("house", house); 
         model.addAttribute("reservationInputForm", new ReservationInputForm());
         model.addAttribute("reviews", reviews);
+        model.addAttribute("hasUserReviewed", hasUserReviewed);
+
         if(userDetailsImpl != null) {
         model.addAttribute("userId", userDetailsImpl.getUser().getId());
         }

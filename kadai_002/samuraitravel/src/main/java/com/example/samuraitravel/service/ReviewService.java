@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.samuraitravel.entity.ReviewEntity;
 import com.example.samuraitravel.entity.User;
+import com.example.samuraitravel.form.ReviewEditForm;
 import com.example.samuraitravel.form.ReviewRegisterForm;
 import com.example.samuraitravel.repository.ReviewRepository;
 import com.example.samuraitravel.repository.UserRepository;
@@ -29,6 +30,19 @@ public class ReviewService {
 		review.setUser(user);
 		review.setReviewStar(reviewRegisterForm.getReviewStar());
 		review.setReviewText(reviewRegisterForm.getReviewText());
+		
+		reviewRepository.save(review);
+	}
+	
+	@Transactional
+	public void updateReview(ReviewEditForm reviewEditForm, Integer userId, Integer id ) {
+		User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("ユーザーが見つかりませんでした。"));
+		ReviewEntity review = new ReviewEntity();
+		
+		review.setId(id);
+		review.setUser(user);
+		review.setReviewStar(reviewEditForm.getReviewStar());
+		review.setReviewText(reviewEditForm.getReviewText());
 		
 		reviewRepository.save(review);
 	}

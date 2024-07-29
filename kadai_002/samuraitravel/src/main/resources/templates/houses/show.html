@@ -172,8 +172,10 @@
 									<div sec:authorize="isAuthenticated()">
 										<!--										レビュー未投稿の時-->
 										<div class="text-center mb-3">
+											<div th:if="${!hasUserReviewed}">
 											<a th:href="@{/houses/__${house.getId()}__/reviewRegister}"
 												class="btn text-white shadow-sm samuraitravel-btn">レビューを投稿する</a>
+											</div>
 										</div>
 										<!--										レビュー投稿済みの時-->
 										<div id="review-wrapper">

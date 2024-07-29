@@ -32,15 +32,11 @@
 						<form method="post" th:action="@{/houses/__${house.getId()}__/createReview}" th:object="${reviewRegisterForm}"
 							enctype="multipart/form-data">
 							<div class="form-group row mb-3">
-								
-								
 								<div class="col-md-4">
 									<label for="reviewStar" class="col-form-label text-md-left fw-bold">評価</label>
 								</div>
 								<div class="col-md-8">
 									<select class="form-control form-select" name="area" th:field="*{reviewStar}">
-										<option value="" hidden>選択してください</option>
-
 										<option value="1" th:selected="${reviewStar == 1}">
 											&#9733;&#9734;&#9734;&#9734;&#9734;</option>
 										<option value="2" th:selected="${reviewStar == 2}">
@@ -60,8 +56,7 @@
 									<label for="name" class="col-form-label text-md-left fw-bold">コメント</label>
 								</div>
 								<div class="col-md-8">
-									<div th:if="${#fields.hasErrors('reviewText')}" class="text-danger small mb-2"
-										th:errors="*{reviewText}"></div>
+									<div th:if="${#fields.hasErrors('reviewText')}" class="text-danger small mb-2" th:errors="*{reviewText}"></div>
 									<textarea class="form-control" th:field="*{reviewText}" cols="30"
 										rows="5"></textarea>
 								</div>

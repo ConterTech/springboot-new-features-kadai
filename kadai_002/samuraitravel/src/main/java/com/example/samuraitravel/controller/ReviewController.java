@@ -45,7 +45,7 @@ public class ReviewController {
 	}
 
 	@GetMapping("/{id}/review")
-	public String index(@PathVariable(name = "id") Integer id,
+	public String index(@PathVariable(name = "id") Integer id,@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
 			@PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC) Pageable pageable,
 			Model model) {
 		Page<ReviewEntity> reviews = reviewRepository.findByIdOrderByCreatedAtDesc(id, pageable);
@@ -53,6 +53,9 @@ public class ReviewController {
 
 		model.addAttribute("house", house);
 		model.addAttribute("reviews", reviews);
+		if(userDetailsImpl != null) {
+			model.addAttribute("userId", userDetailsImpl.getUser().getId());
+		}
 
 		return "review/index";
 	}
@@ -69,21 +72,22 @@ public class ReviewController {
 
 	@PostMapping("/{id}/createReview")
 	public String createReview(@PathVariable(name = "id") Integer id,
-			@ModelAttribute @Validated ReviewRegisterForm reviewRegisterForm, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+			@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute @Validated ReviewRegisterForm reviewRegisterForm, 
 			BindingResult bindingResult,Model model) {
 
-		User user = userDetailsImpl.getUser();
-		Integer userId = user.getId();
-		System.out.println(id);
-		System.out.println(user);
-			
 		if (bindingResult.hasErrors()) {
+			House house = houseRepository.getReferenceById(id);
+	        model.addAttribute("house", house);
+	        model.addAttribute("reviewRegisterForm", reviewRegisterForm);
 			return "review/post";
 		}
-
+		
+		User user = userDetailsImpl.getUser();
+		Integer userId = user.getId();
+		
 		reviewService.createReview(reviewRegisterForm, userId, id);
 
-		return "redirect:/houses";
+		return "redirect:/houses/{id}";
 	}
 	
 	@GetMapping("/{id}/editReview")
@@ -99,5 +103,23 @@ public class ReviewController {
         model.addAttribute("house", house);
         model.addAttribute("reviewEditForm", reviewEditForm);
         return "review/edit";
+	}
+	
+	@PostMapping("/{id}/updateReview")
+	public String updateReview(@PathVariable(name = "id") Integer id,
+			@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute @Validated ReviewEditForm reviewEditForm, 
+			BindingResult bindingResult,Model model) {
+			
+		if (bindingResult.hasErrors()) {
+			House house = houseRepository.getReferenceById(id);
+	        model.addAttribute("house", house);
+	        model.addAttribute("reviewEditForm", reviewEditForm);
+			return "review/edit";
+		}
+		User user = userDetailsImpl.getUser();
+		Integer userId = user.getId();
+		reviewService.updateReview(reviewEditForm, userId, id);
+
+		return "redirect:/houses/{id}";
 	}
 }
