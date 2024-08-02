@@ -122,4 +122,14 @@ public class ReviewController {
 
 		return "redirect:/houses/{id}";
 	}
+	
+	@PostMapping("/{id}/deleteReview")
+	public String deleteReview(@PathVariable(name = "id") Integer id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+		
+		User user = userDetailsImpl.getUser();
+		
+		reviewRepository.deleteByUserAndId(user, id);
+
+		return "redirect:/houses/{id}";
+	}
 }

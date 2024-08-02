@@ -173,8 +173,8 @@
 										<!--										レビュー未投稿の時-->
 										<div class="text-center mb-3">
 											<div th:if="${!hasUserReviewed}">
-											<a th:href="@{/houses/__${house.getId()}__/reviewRegister}"
-												class="btn text-white shadow-sm samuraitravel-btn">レビューを投稿する</a>
+												<a th:href="@{/houses/__${house.getId()}__/reviewRegister}"
+													class="btn text-white shadow-sm samuraitravel-btn">レビューを投稿する</a>
 											</div>
 										</div>
 										<!--										レビュー投稿済みの時-->
@@ -184,11 +184,38 @@
 												<div class="reviewTitle">
 													<div class="reviewer" th:text="${review.getUser().getName()}"></div>
 													<div th:if="${review.getUser().getId() == userId}">
-														<a class="review-edit" th:href="@{/houses/__${house.getId()}__/editReview}">編集</a>
-														<a class="review-delete" th:href="@{/houses/__${house.getId()}__/editReview}">削除</a>
+														<a class="review-edit"
+															th:href="@{/houses/__${house.getId()}__/editReview}">編集</a>
+														<a class="review-delete" href="#" data-bs-toggle="modal"
+															th:data-bs-target="${'#deleteReviewModal' + house.getId()}">削除</a>
+
+														<!-- 削除用モーダル -->
+														<div class="modal fade"
+															th:id="${'deleteReviewModal' + house.getId()}" tabindex="-1"
+															th:aria-labelledby="${'deleteReviewModalLabel' + house.getId()}">
+															<div class="modal-dialog">
+																<div class="modal-content">
+																	<div class="modal-header">
+																		<h5 class="modal-title"
+																			th:id="${'deleteReviewModalLabel' + house.getId()}"
+																			th:text="${house.getName() + 'のレビューを削除してもよろしいですか？'}">
+																		</h5>
+																		<button type="button" class="btn-close"
+																			data-bs-dismiss="modal"
+																			aria-label="閉じる"></button>
+																	</div>
+																	<div class="modal-footer">
+																		<form method="post"
+																			th:action="@{/houses/__${house.getId()}__/deleteReview}">
+																			<button type="submit"
+																				class="btn samuraitravel-btn-danger text-white shadow-sm">削除</button>
+																		</form>
+																	</div>
+																</div>
+															</div>
+														</div>
 													</div>
 												</div>
-
 												<th:block th:switch="${review.reviewStar}">
 													<div class="star-color" th:case=1>
 														&#9733;&#9734;&#9734;&#9734;&#9734;
