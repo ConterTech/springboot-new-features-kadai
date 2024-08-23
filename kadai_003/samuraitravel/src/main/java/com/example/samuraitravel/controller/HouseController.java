@@ -30,79 +30,85 @@ public class HouseController {
 	private final HouseRepository houseRepository;
 	private final ReviewRepository reviewRepository;
 	private final FavoriteRepository favoriteRepository;
-    
-    public HouseController(HouseRepository houseRepository, ReviewRepository reviewRepository, FavoriteRepository favoriteRepository) {
-        this.houseRepository = houseRepository;
-        this.reviewRepository = reviewRepository;
-        this.favoriteRepository = favoriteRepository;
-    }     
-  
-    @GetMapping
-    public String index(@RequestParam(name = "keyword", required = false) String keyword,
-                        @RequestParam(name = "area", required = false) String area,
-                        @RequestParam(name = "price", required = false) Integer price,
-                        @RequestParam(name = "order", required = false) String order,
-                        @PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC) Pageable pageable,
-                        Model model) 
-    {
-        Page<House> housePage;
-                
-        if (keyword != null && !keyword.isEmpty()) {
-        	if (order != null && order.equals("priceAsc")) {
-                housePage = houseRepository.findByNameLikeOrAddressLikeOrderByPriceAsc("%" + keyword + "%", "%" + keyword + "%", pageable);
-            } else {
-                housePage = houseRepository.findByNameLikeOrAddressLikeOrderByCreatedAtDesc("%" + keyword + "%", "%" + keyword + "%", pageable);
-            } 
-        } else if (area != null && !area.isEmpty()) {
-        	if (order != null && order.equals("priceAsc")) {
-                housePage = houseRepository.findByAddressLikeOrderByPriceAsc("%" + area + "%", pageable);
-            } else {
-                housePage = houseRepository.findByAddressLikeOrderByCreatedAtDesc("%" + area + "%", pageable);
-            }
-        } else if (price != null) {
-        	if (order != null && order.equals("priceAsc")) {
-                housePage = houseRepository.findByPriceLessThanEqualOrderByPriceAsc(price, pageable);
-            } else {
-                housePage = houseRepository.findByPriceLessThanEqualOrderByCreatedAtDesc(price, pageable);
-            }
-        } else {
-        	if (order != null && order.equals("priceAsc")) {
-                housePage = houseRepository.findAllByOrderByPriceAsc(pageable);
-            } else {
-                housePage = houseRepository.findAllByOrderByCreatedAtDesc(pageable);   
-            }
-        }                
-        
-        model.addAttribute("housePage", housePage);
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("area", area);
-        model.addAttribute("price", price);
-        model.addAttribute("order", order);
-        
-        return "houses/index";
-    }
-    
-    @GetMapping("/{id}")
-    public String show(@PathVariable(name = "id") Integer id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
-    		@PageableDefault(page=0, size=6, sort="id", direction=Direction.ASC) Pageable pageable, Model model) {
-        House house = houseRepository.getReferenceById(id);
-        User user = userDetailsImpl.getUser();
-        Optional<FavoriteEntity> favorite = favoriteRepository.findByUserAndId(user, id);
-        Page<ReviewEntity> reviews = reviewRepository.findByIdOrderByCreatedAtDesc(id, pageable);
-        
-        model.addAttribute("house", house); 
-        model.addAttribute("reservationInputForm", new ReservationInputForm());
-        model.addAttribute("reviews", reviews);
-        model.addAttribute("favorite", favorite);
 
-        if(userDetailsImpl != null) {
-        model.addAttribute("userId", userDetailsImpl.getUser().getId());
-        boolean hasUserReviewed = reviews.stream().anyMatch(review -> review.getUser().getId().equals(userDetailsImpl.getUser().getId()));
-        boolean hasFavorites = favorite.stream().anyMatch(favorites -> favorites.getUser().getId().equals(userDetailsImpl.getUser().getId()));
-        model.addAttribute("hasUserReviewed", hasUserReviewed);
-        model.addAttribute("hasFavorites", hasFavorites);
-        }
-        
-        return "houses/show";
-    }
+	public HouseController(HouseRepository houseRepository, ReviewRepository reviewRepository,
+			FavoriteRepository favoriteRepository) {
+		this.houseRepository = houseRepository;
+		this.reviewRepository = reviewRepository;
+		this.favoriteRepository = favoriteRepository;
+	}
+
+	@GetMapping
+	public String index(@RequestParam(name = "keyword", required = false) String keyword,
+			@RequestParam(name = "area", required = false) String area,
+			@RequestParam(name = "price", required = false) Integer price,
+			@RequestParam(name = "order", required = false) String order,
+			@PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC) Pageable pageable,
+			Model model) {
+		Page<House> housePage;
+
+		if (keyword != null && !keyword.isEmpty()) {
+			if (order != null && order.equals("priceAsc")) {
+				housePage = houseRepository.findByNameLikeOrAddressLikeOrderByPriceAsc("%" + keyword + "%",
+						"%" + keyword + "%", pageable);
+			} else {
+				housePage = houseRepository.findByNameLikeOrAddressLikeOrderByCreatedAtDesc("%" + keyword + "%",
+						"%" + keyword + "%", pageable);
+			}
+		} else if (area != null && !area.isEmpty()) {
+			if (order != null && order.equals("priceAsc")) {
+				housePage = houseRepository.findByAddressLikeOrderByPriceAsc("%" + area + "%", pageable);
+			} else {
+				housePage = houseRepository.findByAddressLikeOrderByCreatedAtDesc("%" + area + "%", pageable);
+			}
+		} else if (price != null) {
+			if (order != null && order.equals("priceAsc")) {
+				housePage = houseRepository.findByPriceLessThanEqualOrderByPriceAsc(price, pageable);
+			} else {
+				housePage = houseRepository.findByPriceLessThanEqualOrderByCreatedAtDesc(price, pageable);
+			}
+		} else {
+			if (order != null && order.equals("priceAsc")) {
+				housePage = houseRepository.findAllByOrderByPriceAsc(pageable);
+			} else {
+				housePage = houseRepository.findAllByOrderByCreatedAtDesc(pageable);
+			}
+		}
+
+		model.addAttribute("housePage", housePage);
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("area", area);
+		model.addAttribute("price", price);
+		model.addAttribute("order", order);
+
+		return "houses/index";
+	}
+
+	@GetMapping("/{id}")
+	public String show(@PathVariable(name = "id") Integer id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+			@PageableDefault(page = 0, size = 6, sort = "id", direction = Direction.ASC) Pageable pageable,
+			Model model) {
+		House house = houseRepository.getReferenceById(id);
+
+		Page<ReviewEntity> reviews = reviewRepository.findByIdOrderByCreatedAtDesc(id, pageable);
+
+		model.addAttribute("house", house);
+		model.addAttribute("reservationInputForm", new ReservationInputForm());
+		model.addAttribute("reviews", reviews);
+
+		if (userDetailsImpl != null) {
+			User user = userDetailsImpl.getUser();
+			Optional<FavoriteEntity> favorite = favoriteRepository.findByUserAndId(user, id);
+			model.addAttribute("favorite", favorite);
+			model.addAttribute("userId", userDetailsImpl.getUser().getId());
+			boolean hasUserReviewed = reviews.stream()
+					.anyMatch(review -> review.getUser().getId().equals(userDetailsImpl.getUser().getId()));
+			boolean hasFavorites = favorite.stream()
+					.anyMatch(favorites -> favorites.getUser().getId().equals(userDetailsImpl.getUser().getId()));
+			model.addAttribute("hasUserReviewed", hasUserReviewed);
+			model.addAttribute("hasFavorites", hasFavorites);
+		}
+
+		return "houses/show";
+	}
 }
