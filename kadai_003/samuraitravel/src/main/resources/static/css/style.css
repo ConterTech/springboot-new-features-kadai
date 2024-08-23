@@ -126,6 +126,11 @@ html {
      max-width: 300px;
  }
  
+ .favorites {
+	 display: flex;
+	 justify-content: flex-end;
+ }
+ 
  @media screen and (min-width: 1400px) {
    .samuraitravel-container {
      max-width: 1200px;

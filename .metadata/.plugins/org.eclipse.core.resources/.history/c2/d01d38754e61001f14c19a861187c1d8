@@ -1,0 +1,43 @@
+package com.example.samuraitravel.controller;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.example.samuraitravel.entity.User;
+import com.example.samuraitravel.repository.FavoriteRepository;
+import com.example.samuraitravel.repository.HouseRepository;
+import com.example.samuraitravel.repository.UserRepository;
+import com.example.samuraitravel.security.UserDetailsImpl;
+import com.example.samuraitravel.service.FavoriteService;
+
+import lombok.RequiredArgsConstructor;
+
+@Controller
+@RequestMapping("/houses")
+@RequiredArgsConstructor
+public class FavoriteController {
+	private final HouseRepository houseRepository;
+	private final UserRepository userRepository;
+	private final FavoriteRepository favoriteRepository;
+	private final FavoriteService favoriteService;
+	
+	@PostMapping("{id}/addFavorite")
+	public String addFavorite(@PathVariable(name = "id") Integer id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+		User user = userDetailsImpl.getUser();
+		favoriteService.addFavorite(user, id);
+		
+		return "redirect:/houses/{id}";
+	}
+	
+	@PostMapping("{id}/deleteFavorite")
+	public String deleteFavorite(@PathVariable(name = "id") Integer id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+		User user = userDetailsImpl.getUser();
+		
+		favoriteRepository.deleteByUserAndId(user, id);
+		
+		return "redirect:/houses/{id}";
+	}
+}

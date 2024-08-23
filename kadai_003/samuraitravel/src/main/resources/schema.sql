@@ -68,3 +68,12 @@ CREATE TABLE IF NOT EXISTS review (
     FOREIGN KEY (id) REFERENCES houses (id),
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
+
+CREATE TABLE IF NOT EXISTS favorites (
+	id INT,
+	user_id INT,
+	PRIMARY KEY (id, user_id),
+    FOREIGN KEY (id) REFERENCES houses (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
+);
+	

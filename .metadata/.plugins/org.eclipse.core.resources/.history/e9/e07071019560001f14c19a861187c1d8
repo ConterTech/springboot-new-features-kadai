@@ -1,0 +1,20 @@
+package com.example.samuraitravel.repository;
+
+
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.samuraitravel.entity.FavoriteEntity;
+import com.example.samuraitravel.entity.User;
+
+import jakarta.transaction.Transactional;
+
+public interface FavoriteRepository extends JpaRepository<FavoriteEntity, Integer> {
+	public Page<FavoriteEntity> findByUser(User user, Pageable pageable);
+	
+	@Transactional
+	public void deleteByHouseIdAndUserId(Integer houseId, Integer userId);
+	public FavoriteEntity getByHouseIdAndUserId(Integer houseId, Integer userId);
+}

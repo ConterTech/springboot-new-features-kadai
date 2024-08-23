@@ -1,5 +1,7 @@
 package com.example.samuraitravel.controller;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -12,9 +14,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.samuraitravel.entity.FavoriteEntity;
 import com.example.samuraitravel.entity.House;
 import com.example.samuraitravel.entity.ReviewEntity;
+import com.example.samuraitravel.entity.User;
 import com.example.samuraitravel.form.ReservationInputForm;
+import com.example.samuraitravel.repository.FavoriteRepository;
 import com.example.samuraitravel.repository.HouseRepository;
 import com.example.samuraitravel.repository.ReviewRepository;
 import com.example.samuraitravel.security.UserDetailsImpl;
@@ -24,10 +29,12 @@ import com.example.samuraitravel.security.UserDetailsImpl;
 public class HouseController {
 	private final HouseRepository houseRepository;
 	private final ReviewRepository reviewRepository;
+	private final FavoriteRepository favoriteRepository;
     
-    public HouseController(HouseRepository houseRepository, ReviewRepository reviewRepository) {
+    public HouseController(HouseRepository houseRepository, ReviewRepository reviewRepository, FavoriteRepository favoriteRepository) {
         this.houseRepository = houseRepository;
         this.reviewRepository = reviewRepository;
+        this.favoriteRepository = favoriteRepository;
     }     
   
     @GetMapping
@@ -79,16 +86,21 @@ public class HouseController {
     public String show(@PathVariable(name = "id") Integer id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
     		@PageableDefault(page=0, size=6, sort="id", direction=Direction.ASC) Pageable pageable, Model model) {
         House house = houseRepository.getReferenceById(id);
+        User user = userDetailsImpl.getUser();
+        Optional<FavoriteEntity> favorite = favoriteRepository.findByUserAndId(user, id);
         Page<ReviewEntity> reviews = reviewRepository.findByIdOrderByCreatedAtDesc(id, pageable);
         
         model.addAttribute("house", house); 
         model.addAttribute("reservationInputForm", new ReservationInputForm());
         model.addAttribute("reviews", reviews);
+        model.addAttribute("favorite", favorite);
 
         if(userDetailsImpl != null) {
         model.addAttribute("userId", userDetailsImpl.getUser().getId());
         boolean hasUserReviewed = reviews.stream().anyMatch(review -> review.getUser().getId().equals(userDetailsImpl.getUser().getId()));
+        boolean hasFavorites = favorite.stream().anyMatch(favorites -> favorites.getUser().getId().equals(userDetailsImpl.getUser().getId()));
         model.addAttribute("hasUserReviewed", hasUserReviewed);
+        model.addAttribute("hasFavorites", hasFavorites);
         }
         
         return "houses/show";

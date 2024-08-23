@@ -1,0 +1,30 @@
+package com.example.samuraitravel.service;
+
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.samuraitravel.entity.FavoriteEntity;
+import com.example.samuraitravel.entity.User;
+import com.example.samuraitravel.repository.FavoriteRepository;
+import com.example.samuraitravel.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class FavoriteService {
+	private final FavoriteRepository favoriteRepository;
+	private final UserRepository userRepository;
+	
+	@Transactional
+	public void addFavorite(Integer userId, Integer id) {
+		User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("ユーザーが見つかりませんでした。"));
+		FavoriteEntity favorite = new FavoriteEntity();
+		
+		favorite.setId(id);
+		favorite.setUser(user);
+		
+		favoriteRepository.save(favorite);
+	}
+}
